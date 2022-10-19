@@ -1,3 +1,4 @@
+/*
 terraform {
   required_providers {
     aws = {
@@ -15,7 +16,7 @@ terraform {
     organization = "REPLACE_ME"
 
     workspaces {
-      name = "gh-actions-demo"
+      name = "gh-actions"
     }
   }
 }
@@ -41,9 +42,18 @@ data "aws_ami" "ubuntu" {
 
   owners = ["099720109477"] # Canonical
 }
+*/
+
+provider "aws" {
+    region = "ap-southeast-1"
+    access_key = "AKIAVJP2DWQIOMTTALVX"
+    secret_key = "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"
+}
+
+resource "random_pet" "sg" {}
 
 resource "aws_instance" "web" {
-  ami                    = data.aws_ami.ubuntu.id
+  ami                    = "ami-07651f0c4c315a529"
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.web-sg.id]
 
@@ -52,11 +62,12 @@ resource "aws_instance" "web" {
               apt-get update
               apt-get install -y apache2
               sed -i -e 's/80/8080/' /etc/apache2/ports.conf
-              echo "Hello World" > /var/www/html/index.html
+              wget -O - https://raw.githubusercontent.com/mk3-14159/devops-project/main/index.html > /var/www/html/index.html
               systemctl restart apache2
               EOF
 }
 
+# enable port 8080
 resource "aws_security_group" "web-sg" {
   name = "${random_pet.sg.id}-sg"
   ingress {
@@ -70,6 +81,16 @@ resource "aws_security_group" "web-sg" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# enable ssh from anywhere
+resource "aws_security_group" "ssh-group" {
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
