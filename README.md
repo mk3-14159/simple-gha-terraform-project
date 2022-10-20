@@ -3,7 +3,10 @@
 
 This repo is a companion repo to the [Automate Terraform with GitHub Actions](https://learn.hashicorp.com/tutorials/terraform/github-actions?in=terraform/automation).
 
+Couldn't get GH Actions to push to AWS EC2 Instance
 
+Error Message on Terraform Apply
+```
+Error: creating EC2 Instance: Blocked: This account is currently blocked and not recognized as a valid account. Please contact aws-verification@amazon.com if you have questions.
 
-useful - https://www.youtube.com/watch?v=GowFk_5Rx_I
-https://github.com/KasteM34/github-oidc-terraform/blob/main/github-action.yml
+```
